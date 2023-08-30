@@ -10,9 +10,14 @@ public class ATM {
     // HashMap of Accounts; Key: Email, Value: ID
     HashMap<String, Double> accounts = new HashMap<String, Double>();
 
-    // hashes String & returns as String
-    public String hashString(String str) {
-        return Integer.toString(str.hashCode());
+    // // hashes String & returns as String
+    // public String hashString(String str) {
+    // return Integer.toString(str.hashCode());
+    // }
+
+    // check if account exists
+    public boolean accountExist(String userId) {
+        return (accounts.containsKey(userId));
     }
 
     public double checkBalance(String userID) throws Exception {
@@ -24,9 +29,7 @@ public class ATM {
     }
 
     // creates a new account from a email & amount
-    public void openAccount(String email, double amount) throws Exception {
-        // hashes userID
-        String userID = hashString(email);
+    public void openAccount(String userID, double amount) throws Exception {
 
         // if there already exists and account, throw error
         if (accounts.containsKey(userID)) {
@@ -50,6 +53,19 @@ public class ATM {
 
         // delet
         accounts.remove(userID);
+    }
+
+    public double depositMoney(String userID, double amount) throws Exception {
+
+        // if account no exist, throw error
+        if (!accounts.containsKey(userID)) {
+            throw new Exception("User does not exist");
+        }
+
+        // replace amount
+        accounts.put(userID, accounts.get(userID) + amount);
+
+        return amount;
     }
 
 }
