@@ -82,9 +82,35 @@ public class ATM {
             throw new Exception("Withdrawal amount exceeds balance");
         }
 
+        // actually withdraw money
         accounts.put(userID, accounts.get(userID) - withdraw);
 
         return withdraw;
+    }
+
+    public boolean transferMoney(String fromAccount, String toAccount, double amount) throws Exception {
+
+        // check if accounts exist before running
+        if (!accountExist(fromAccount))
+            return false;
+        if (!accountExist(toAccount))
+            return false;
+
+        // withdraw
+        double balanceFrom = accounts.get(fromAccount);
+
+        // if withdraw > amount, throw error
+        if (amount > balanceFrom) {
+            return false;
+        }
+
+        // actually withdraw money
+        accounts.put(fromAccount, accounts.get(fromAccount) - amount);
+
+        // deposit
+        accounts.put(toAccount, accounts.get(toAccount) + amount);
+
+        return true;
     }
 
 }
