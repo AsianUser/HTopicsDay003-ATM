@@ -55,7 +55,7 @@ public class ATM {
         accounts.remove(userID);
     }
 
-    public double depositMoney(String userID, double amount) throws Exception {
+    public double depositMoney(String userID, double deposit) throws Exception {
 
         // if account no exist, throw error
         if (!accounts.containsKey(userID)) {
@@ -63,9 +63,28 @@ public class ATM {
         }
 
         // replace amount
-        accounts.put(userID, accounts.get(userID) + amount);
+        accounts.put(userID, accounts.get(userID) + deposit);
 
-        return amount;
+        return deposit;
+    }
+
+    public double withdrawMoney(String userID, double withdraw) throws Exception {
+        // if account no exist, throw error
+        if (!accounts.containsKey(userID)) {
+            throw new Exception("User does not exist");
+        }
+
+        // check how much money remains
+        double amount = accounts.get(userID);
+
+        // if withdraw > amount, throw error
+        if (withdraw > amount) {
+            throw new Exception("Withdrawal amount exceeds balance");
+        }
+
+        accounts.put(userID, accounts.get(userID) - withdraw);
+
+        return withdraw;
     }
 
 }
