@@ -18,7 +18,7 @@ public class ATM {
     // }
 
     // check if account exists
-    public boolean accountExist(String userId) {
+    private boolean accountExist(String userId) {
         return (accounts.containsKey(userId));
     }
 
@@ -160,7 +160,7 @@ public class ATM {
         pw.close();
     }
 
-    public void printAccounts() {
+    private void printAccounts() {
         for (Map.Entry<String, Double> account : accounts.entrySet()) {
             System.out.println(account.getKey() + " = " + account.getValue());
         }
@@ -215,9 +215,52 @@ public class ATM {
 
         System.out.println(atm.checkAudit());
 
+        System.out.println("________________________________________________________________________");
+        ;
+        /**
+         * Copy pasted from official tester -->
+         */
+
+        ATM bank = new ATM();
+        int workingFunctions = 0;
+
+        try {
+            bank.openAccount("user1@example.com", 1000);
+            workingFunctions++;
+
+            bank.openAccount("user2@example.com", 500);
+            workingFunctions++;
+
+            bank.depositMoney("user1@example.com", 200);
+            workingFunctions++;
+
+            bank.withdrawMoney("user2@example.com", 100);
+            workingFunctions++;
+
+            bank.transferMoney("user1@example.com", "user2@example.com", 150);
+            workingFunctions++;
+
+            System.out.println("Balance for user1@example.com: " + bank.checkBalance("user1@example.com")); // Should be
+                                                                                                            // 1050.0
+            workingFunctions++;
+
+            System.out.println("Balance for user2@example.com: " + bank.checkBalance("user2@example.com")); // Should be
+                                                                                                            // 550.0
+            workingFunctions++;
+
+            bank.audit();
+            workingFunctions++;
+
+            System.out.println("Audit completed successfully.");
+            verifyAuditFile("AccountAudit.txt", 2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            System.out.println("Valid Use Cases: " + workingFunctions);
+        }
     }
 
-    public boolean checkAudit() throws Exception {
+    private boolean checkAudit() throws Exception {
         // reads & compares account audit to expected line-by-line
         BufferedReader buffReader = new BufferedReader(new FileReader("AccountAudit.txt"));
 
@@ -236,6 +279,26 @@ public class ATM {
         buffReader.close();
 
         return true;
+    }
+
+    /**
+     * copy pasted from official tester
+     */
+    private static void verifyAuditFile(String fileName, int expectedEntries) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            int entryCount = 0;
+            while (reader.readLine() != null) {
+                entryCount++;
+            }
+            if (entryCount == expectedEntries) {
+                System.out.println("Audit file entries match expected count.");
+            } else {
+                System.out.println(
+                        "Audit file entries" + entryCount + "do not match expected count" + expectedEntries + ".");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
