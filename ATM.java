@@ -97,6 +97,7 @@ public class ATM {
 
         // if withdraw > amount, throw error
         if (withdraw > amount) {
+            // System.out.println(withdraw + "-" + amount);
             throw new Exception("Withdrawal amount exceeds balance");
         }
 
@@ -159,5 +160,82 @@ public class ATM {
         pw.close();
     }
 
+    public void printAccounts() {
+        for (Map.Entry<String, Double> account : accounts.entrySet()) {
+            System.out.println(account.getKey() + " = " + account.getValue());
+        }
+        System.out.println("____________________________");
+    }
+
+    public static void main(String[] args) throws Exception {
+        ATM atm = new ATM();
+
+        // tests if hashmap empty
+
+        // testing accounts
+        String[] emails = { "0@ee.com", "1@ff.com", "2@gg.com", "3.hhcom" };
+        Double[] balance = { 1.0, 100.0, 9029.31093, 0.0 };
+
+        // add accounts
+        for (int i = 0; i < emails.length; i++) {
+            atm.openAccount(emails[i], balance[i]);
+        }
+        // test exception
+        // atm.openAccount(emails[0], 0000);
+
+        atm.printAccounts();
+
+        // deposit
+        atm.depositMoney(emails[1], 0);
+        atm.depositMoney(emails[3], 5);
+        // test exception
+        // atm.depositMoney(emails[0], -1);
+
+        atm.printAccounts();
+
+        // withdraw
+        atm.withdrawMoney(emails[2], 9029);
+        atm.withdrawMoney(emails[1], 0);
+        // test exception
+        // atm.withdrawMoney(emails[0], 1);
+        // atm.withdrawMoney(emails[2], -5);
+
+        atm.printAccounts();
+
+        // transfer money
+        atm.transferMoney(emails[1], emails[2], 50);
+        atm.transferMoney(emails[2], emails[3], 0);
+        // test exception
+        // atm.transferMoney(emails[0], emails[1], -1);
+        // System.out.println(atm.transferMoney(emails[0], emails[3], 100000));
+
+        atm.printAccounts();
+
+        atm.audit();
+
+        System.out.println(atm.checkAudit());
+
+    }
+
+    public boolean checkAudit() throws Exception {
+        // reads & compares account audit to expected line-by-line
+        BufferedReader buffReader = new BufferedReader(new FileReader("AccountAudit.txt"));
+
+        String expected = "";
+        String actual = "";
+        for (Map.Entry<String, Double> account : accounts.entrySet()) {
+            expected = (account.getKey() + " = " + account.getValue());
+            actual = buffReader.readLine();
+            if (!expected.equals(actual)) {
+                System.out.println("expected:" + expected + " - " + "actual:" + actual);
+                buffReader.close();
+                return false;
+            }
+        }
+
+        buffReader.close();
+
+        return true;
+    }
 
 }
