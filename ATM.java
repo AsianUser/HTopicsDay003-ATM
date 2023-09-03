@@ -1,5 +1,7 @@
 
 import java.util.*;
+import java.io.*;
+import java.nio.file.*;
 
 /**
  * NOTES:
@@ -31,6 +33,11 @@ public class ATM {
     // creates a new account from a email & amount
     public void openAccount(String userID, double amount) throws Exception {
 
+        // if amount neg, throw error
+        if (amount < 0) {
+            throw new Exception("Invalid deposit: deposit < 0");
+        }
+
         // if there already exists and account, throw error
         if (accounts.containsKey(userID)) {
             throw new Exception("User already exists");
@@ -57,6 +64,11 @@ public class ATM {
 
     public double depositMoney(String userID, double deposit) throws Exception {
 
+        // if amount neg, throw error
+        if (deposit < 0) {
+            throw new Exception("Invalid deposit: deposit < 0");
+        }
+
         // if account no exist, throw error
         if (!accounts.containsKey(userID)) {
             throw new Exception("User does not exist");
@@ -69,6 +81,12 @@ public class ATM {
     }
 
     public double withdrawMoney(String userID, double withdraw) throws Exception {
+
+        // if amount neg, throw error
+        if (withdraw < 0) {
+            throw new Exception("Invalid withdraw: withdraw < 0");
+        }
+
         // if account no exist, throw error
         if (!accounts.containsKey(userID)) {
             throw new Exception("User does not exist");
@@ -89,6 +107,11 @@ public class ATM {
     }
 
     public boolean transferMoney(String fromAccount, String toAccount, double amount) throws Exception {
+
+        // if amount neg, throw error
+        if (amount < 0) {
+            throw new Exception("Invalid amount: amount < 0");
+        }
 
         // check if accounts exist before running
         if (!accountExist(fromAccount))
@@ -112,5 +135,29 @@ public class ATM {
 
         return true;
     }
+
+    public void audit() throws IOException {
+        // delete file if exists
+        Files.deleteIfExists(Paths.get("AccountAudit.txt"));
+        // c:/Users/benja/Documents/VSCode/HTopics Repos&Notes/HTopics Day 003/ATM/
+
+        // create file
+        File auditFile = new File("AccountAudit.txt");
+        auditFile.createNewFile();
+
+        // begin print writer
+        PrintWriter pw = new PrintWriter(auditFile);
+
+        // print out
+        for (Map.Entry<String, Double> account : accounts.entrySet()) {
+            // Printing all elements of a Map
+            pw.write(account.getKey() + " = " + account.getValue() + "\n");
+            // System.out.println (account.getKey() + " = " + account.getValue());
+        }
+
+        // close
+        pw.close();
+    }
+
 
 }
